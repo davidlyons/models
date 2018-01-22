@@ -7,16 +7,22 @@ var Wavid = function( dom ){
 
 	var floaties = [];
 
-	// var wavidMat = new THREE.MeshPhongMaterial({
 	var wavidMat = new THREE.MeshToonMaterial({
 		map: textureLoader.load('models/wavid/wavid.png'),
 		specular: 0x333333,
-		// shininess: 20
 		shininess: 1
 	});
 
+	var outlineMat = new THREE.ShaderMaterial({
+		uniforms: THREE.UniformsUtils.clone( OutlineShader.uniforms ),
+		vertexShader: OutlineShader.vertexShader,
+		fragmentShader: OutlineShader.fragmentShader,
+		side: THREE.BackSide,
+		transparent: true
+	});
+
 	jsonLoader.load( 'models/wavid/wavid.js', function(geometry) {
-		var wavid = window.wavid = new THREE.Mesh(geometry, wavidMat);
+		var wavid = THREE.SceneUtils.createMultiMaterialObject( geometry, [ wavidMat, outlineMat ] );
 		wavid.scale.setScalar( 0.07 );
 		scene.userData.group.add( wavid );
 		floaties.push( wavid );
@@ -46,8 +52,6 @@ var Wavid = function( dom ){
 
 	scene.userData.camera.position.x = 0.2;
 	scene.userData.camera.position.z = 0.3;
-
-	// scene.userData.controls.target.y = 0;
 
 	scene.userData.klight.intensity = 1;
 	scene.remove( scene.userData.hlight );

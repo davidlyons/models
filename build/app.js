@@ -1,4 +1,34 @@
-var ModelScene = function( dom ){
+var OutlineShader = {
+
+	uniforms: {
+		offset: { type: 'f', value: 0.03 },
+		color: { type: 'v3', value: new THREE.Color('#000000') },
+		alpha: { type: 'f', value: 1.0 }
+	},
+
+	vertexShader: [
+
+		"uniform float offset;",
+
+		"void main() {",
+		"  vec4 pos = modelViewMatrix * vec4( position + normal * offset, 1.0 );",
+		"  gl_Position = projectionMatrix * pos;",
+		"}"
+
+	].join('\n'),
+
+	fragmentShader: [
+
+		"uniform vec3 color;",
+		"uniform float alpha;",
+
+		"void main() {",
+		"  gl_FragColor = vec4( color, alpha );",
+		"}"
+
+	].join('\n')
+
+};;var ModelScene = function( dom ){
 
 	var scene = this;
 	THREE.Scene.call( scene );
@@ -422,8 +452,17 @@ Bird.prototype.constructor = Bird;;var Wavid = function( dom ){
 		shininess: 1
 	});
 
+	var outlineMat = new THREE.ShaderMaterial({
+		uniforms: THREE.UniformsUtils.clone( OutlineShader.uniforms ),
+		vertexShader: OutlineShader.vertexShader,
+		fragmentShader: OutlineShader.fragmentShader,
+		side: THREE.BackSide,
+		transparent: true
+	});
+
 	jsonLoader.load( 'models/wavid/wavid.js', function(geometry) {
-		var wavid = window.wavid = new THREE.Mesh(geometry, wavidMat);
+		// var wavid = window.wavid = new THREE.Mesh(geometry, wavidMat);
+		var wavid = THREE.SceneUtils.createMultiMaterialObject( geometry, [ wavidMat, outlineMat ] );
 		wavid.scale.setScalar( 0.07 );
 		scene.userData.group.add( wavid );
 		floaties.push( wavid );
@@ -453,8 +492,6 @@ Bird.prototype.constructor = Bird;;var Wavid = function( dom ){
 
 	scene.userData.camera.position.x = 0.2;
 	scene.userData.camera.position.z = 0.3;
-
-	// scene.userData.controls.target.y = 0;
 
 	scene.userData.klight.intensity = 1;
 	scene.remove( scene.userData.hlight );
