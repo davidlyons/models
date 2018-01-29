@@ -1,1 +1,0 @@
-3d modeling portfolio
