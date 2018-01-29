@@ -444,11 +444,9 @@ Bird.prototype.constructor = Bird;;var Wavid = function( dom ){
 
 	var floaties = [];
 
-	// var wavidMat = new THREE.MeshPhongMaterial({
 	var wavidMat = new THREE.MeshToonMaterial({
 		map: textureLoader.load('models/wavid/wavid.png'),
 		specular: 0x333333,
-		// shininess: 20
 		shininess: 1
 	});
 
@@ -461,7 +459,6 @@ Bird.prototype.constructor = Bird;;var Wavid = function( dom ){
 	});
 
 	jsonLoader.load( 'models/wavid/wavid.js', function(geometry) {
-		// var wavid = window.wavid = new THREE.Mesh(geometry, wavidMat);
 		var wavid = THREE.SceneUtils.createMultiMaterialObject( geometry, [ wavidMat, outlineMat ] );
 		wavid.scale.setScalar( 0.07 );
 		scene.userData.group.add( wavid );
