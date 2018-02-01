@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 		uglify: {
 			options: {
 				compress: {
-					drop_console: true
+					drop_console: false
 				}
 			},
 			my_target: {
@@ -64,7 +64,7 @@ module.exports = function(grunt) {
 				tasks: ['sass']
 			},
 			scripts: {
-				files: ['src/*.js'],
+				files: ['src/*.js','src/**/*.js'],
 				tasks: ['concat','uglify']
 			}
 		},

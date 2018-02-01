@@ -514,6 +514,8 @@ var skeletons = [];
 	var renderer;
 	var clock = new THREE.Clock();
 
+	var fullScene = null;
+
 	var gui = new dat.GUI();
 	gui.close();
 
@@ -563,7 +565,6 @@ var skeletons = [];
 
 		for ( var i =  0; i < models.length; i ++ ) {
 
-			// make a list item
 			var element = document.createElement('div');
 			element.className = 'list-item';
 
@@ -571,6 +572,7 @@ var skeletons = [];
 			sceneEl.className = 'scene';
 
 			var scene = new models[i]( sceneEl );
+			scenes.push( scene );
 
 			var title = document.createElement('div');
 			title.className = 'title';
@@ -580,7 +582,58 @@ var skeletons = [];
 			// element.appendChild( title );
 			content.appendChild( element );
 
-			scenes.push( scene );
+			var full = document.createElement('div');
+			full.className = 'full-toggle';
+			var icon = document.createElement('icon');
+			icon.className = 'fas fa-lg fa-search-plus';;
+			full.appendChild( icon );
+			element.appendChild( full );
+
+			scene.userData.icon = icon;
+
+			var mouseup = function(s){
+				return function() {
+
+					if ( window.gtag ) {
+						var action = fullScene ? 'minimize' : 'maximize';
+						gtag('event', action, {
+							'event_category': 'Scenes',
+							'event_label': s.name
+						});
+					}
+
+					if ( fullScene ) {
+
+						fullScene.userData.element.parentNode.classList.remove('full');
+
+						fullScene.userData.icon.classList.remove('fa-search-minus');
+						fullScene.userData.icon.classList.add('fa-search-plus');
+
+						fullScene = null;
+
+						scenes.forEach(function(scene){
+							scene.userData.element.parentNode.removeAttribute('style');
+						});
+
+					} else {
+
+						fullScene = s;
+
+						scenes.forEach(function(scene){
+							scene.userData.element.parentNode.style.display = 'none';
+						});
+
+						s.userData.element.parentNode.style.display = 'inline-block';
+						s.userData.element.parentNode.classList.add('full');
+
+						s.userData.icon.classList.remove('fa-search-plus');
+						s.userData.icon.classList.add('fa-search-minus');
+
+					}
+				}
+			}( scene );
+
+			full.addEventListener('mouseup', mouseup, false);
 
 		}
 
@@ -673,7 +726,8 @@ var skeletons = [];
 
 			// check if it's offscreen. If so skip it
 			if ( rect.bottom < 0 || rect.top  > renderer.domElement.clientHeight ||
-				 rect.right  < 0 || rect.left > renderer.domElement.clientWidth ) {
+				 rect.right  < 0 || rect.left > renderer.domElement.clientWidth ||
+				 element.parentNode.style.display == 'none' ) {
 
 				return;  // it's off screen
 
@@ -690,9 +744,9 @@ var skeletons = [];
 
 			var camera = scene.userData.camera;
 
-			// not changing in this example
-			// camera.aspect = width / height;
-			// camera.updateProjectionMatrix();
+			// changes when a scene goes fullscreen
+			camera.aspect = width / height;
+			camera.updateProjectionMatrix();
 
 			scene.userData.controls.update();
 
