@@ -23,6 +23,7 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				src: [
+					'third-party/url.js',
 					'src/outline-shader.js',
 					'src/model-scene.js',
 					'src/scenes/gas-mask.js',

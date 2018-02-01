@@ -1,4 +1,50 @@
-var OutlineShader = {
+(function(href) {
+
+  // We'll be returning this
+  var url = {};
+
+  // Where is the hash?
+  var h = href.indexOf('#');
+  
+  // Where is the query string?
+  // (we find it ourselves instead of using location.search so that this
+  // closure can just take in a string)
+  var q = href.indexOf('?');
+  var search = h == -1 ? href.substring(q) : href.substring(q, h);
+
+  // Create url dictionary
+  search.replace(
+    /([^?=&]+)(=([^&]+))?/g,
+    function($0, $1, $2, $3) {
+      url[$1] = decodeURIComponent($3);
+    }
+  );
+
+  // Define boolean parser
+  url['boolean'] = function(name, defaultValue) {
+    if (!url.hasOwnProperty(name))
+      return defaultValue;
+    return url[name] !== 'false';
+  };
+
+  // Define number parser
+  url['number'] = function(name, defaultValue) {
+    var r = parseFloat(url[name]);
+    if (r != r) 
+      return defaultValue;
+    return r;
+  };
+
+  // Get hash value without hash mark
+  url['hash'] = h == -1 ? undefined : href.substring(h+1);
+
+  // Store this closure for unit tests
+  url['setUrl'] = arguments.callee; 
+
+  // Make library public
+  window['url'] = url;
+
+})(location.href);;var OutlineShader = {
 
 	uniforms: {
 		offset: { type: 'f', value: 0.03 },
@@ -510,7 +556,8 @@ var skeletons = [];
 (function(){
 
 	var canvas;
-	var scenes = [];
+	var scenes = window.scenes = [];
+	scenes.byName = {};
 	var renderer;
 	var clock = new THREE.Clock();
 
@@ -529,7 +576,24 @@ var skeletons = [];
 	THREE.DefaultLoadingManager.onLoad = function ( ) {
 		// console.log('Loading complete!');
 		document.body.classList.add('loaded');
+
 		loop();
+
+		if ( url.s && scenes.byName[url.s] ) {
+
+			fullScene = scenes.byName[url.s];
+
+			scenes.forEach(function(scene){
+				scene.userData.element.parentNode.style.display = 'none';
+			});
+
+			fullScene.userData.element.parentNode.style.display = 'inline-block';
+			fullScene.userData.element.parentNode.classList.add('full');
+
+			fullScene.userData.icon.classList.remove('fa-search-plus');
+			fullScene.userData.icon.classList.add('fa-search-minus');
+
+		}
 	};
 
 	init();
@@ -574,6 +638,10 @@ var skeletons = [];
 			var scene = new models[i]( sceneEl );
 			scenes.push( scene );
 
+			var key = scene.name.toLowerCase().replace(' ','-');
+			scene.userData.key = key;
+			scenes.byName[key] = scene;
+
 			var title = document.createElement('div');
 			title.className = 'title';
 			title.innerHTML = scene.name;
@@ -615,6 +683,8 @@ var skeletons = [];
 							scene.userData.element.parentNode.removeAttribute('style');
 						});
 
+						History.replaceState( null, document.title, window.location.origin );
+
 					} else {
 
 						fullScene = s;
@@ -628,6 +698,9 @@ var skeletons = [];
 
 						s.userData.icon.classList.remove('fa-search-plus');
 						s.userData.icon.classList.add('fa-search-minus');
+
+						var url = '?s=' + s.userData.key;
+						History.replaceState( null, document.title, url );
 
 					}
 				}

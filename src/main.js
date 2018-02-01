@@ -8,7 +8,8 @@ var skeletons = [];
 (function(){
 
 	var canvas;
-	var scenes = [];
+	var scenes = window.scenes = [];
+	scenes.byName = {};
 	var renderer;
 	var clock = new THREE.Clock();
 
@@ -27,7 +28,24 @@ var skeletons = [];
 	THREE.DefaultLoadingManager.onLoad = function ( ) {
 		// console.log('Loading complete!');
 		document.body.classList.add('loaded');
+
 		loop();
+
+		if ( url.s && scenes.byName[url.s] ) {
+
+			fullScene = scenes.byName[url.s];
+
+			scenes.forEach(function(scene){
+				scene.userData.element.parentNode.style.display = 'none';
+			});
+
+			fullScene.userData.element.parentNode.style.display = 'inline-block';
+			fullScene.userData.element.parentNode.classList.add('full');
+
+			fullScene.userData.icon.classList.remove('fa-search-plus');
+			fullScene.userData.icon.classList.add('fa-search-minus');
+
+		}
 	};
 
 	init();
@@ -72,6 +90,10 @@ var skeletons = [];
 			var scene = new models[i]( sceneEl );
 			scenes.push( scene );
 
+			var key = scene.name.toLowerCase().replace(' ','-');
+			scene.userData.key = key;
+			scenes.byName[key] = scene;
+
 			var title = document.createElement('div');
 			title.className = 'title';
 			title.innerHTML = scene.name;
@@ -113,6 +135,8 @@ var skeletons = [];
 							scene.userData.element.parentNode.removeAttribute('style');
 						});
 
+						History.replaceState( null, document.title, window.location.origin );
+
 					} else {
 
 						fullScene = s;
@@ -126,6 +150,9 @@ var skeletons = [];
 
 						s.userData.icon.classList.remove('fa-search-plus');
 						s.userData.icon.classList.add('fa-search-minus');
+
+						var url = '?s=' + s.userData.key;
+						History.replaceState( null, document.title, url );
 
 					}
 				}
