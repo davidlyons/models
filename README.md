@@ -1,1 +1,4 @@
-3D art portfolio
+my personal 3D art portfolio
+
+![screenshot](thumbnail.png)
+
