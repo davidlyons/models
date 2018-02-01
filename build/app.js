@@ -71,29 +71,31 @@ var OutlineShader = {
 }
 
 ModelScene.prototype = Object.create( THREE.Scene.prototype );
-ModelScene.prototype.constructor = ModelScene;;var GasMask = function( dom ){
+ModelScene.prototype.constructor = ModelScene;;var Helmet = function( dom ){
 
 	var scene = this;
 	ModelScene.call( scene, dom );
 
-	scene.name = 'Gas Mask';
+	scene.name = 'Helmet';
 
-	fbxLoader.load('models/gasmask/gas-mask.fbx', function(fbx){
+	fbxLoader.load('models/helmet/helmet.fbx', function(fbx){
 
-		var gasMask = fbx;
-		gasMask.scale.setScalar( .15 );
-		scene.userData.group.add( gasMask );
+		var helmet = fbx;
+		helmet.scale.setScalar( .15 );
+		scene.userData.group.add( helmet );
 
 	});
 
-	scene.userData.camera.position.x = .15;
-	scene.userData.camera.position.y = .2;
-	scene.userData.camera.position.z = .2;
+	scene.userData.camera.position.x = .14;
+	scene.userData.camera.position.y = .05;
+	scene.userData.camera.position.z = .23;
+
+	scene.userData.controls.target.y = 0;
 
 }
 
-GasMask.prototype = Object.create( ModelScene.prototype );
-GasMask.prototype.constructor = GasMask;;var Horse = function( dom ){
+Helmet.prototype = Object.create( ModelScene.prototype );
+Helmet.prototype.constructor = Helmet;;var Horse = function( dom ){
 
 	var scene = this;
 	ModelScene.call( scene, dom );
@@ -558,7 +560,7 @@ var skeletons = [];
 			Max,
 			Horse,
 			Skull,
-			GasMask
+			Helmet
 		];
 
 		var content = document.getElementById('scenes');

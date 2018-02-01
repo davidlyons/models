@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 				src: [
 					'src/outline-shader.js',
 					'src/model-scene.js',
-					'src/scenes/gas-mask.js',
+					'src/scenes/helmet.js',
 					'src/scenes/horse.js',
 					'src/scenes/skull.js',
 					'src/scenes/max.js',

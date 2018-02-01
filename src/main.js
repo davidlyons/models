@@ -56,7 +56,7 @@ var skeletons = [];
 			Max,
 			Horse,
 			Skull,
-			GasMask
+			Helmet
 		];
 
 		var content = document.getElementById('scenes');
