@@ -53,7 +53,7 @@ var OutlineShader = {
 	controls.enablePan = false;
 	controls.enableZoom = false;
 	controls.target.y = 0.1;
-	controls.autoRotate = true;
+	controls.autoRotate = false;
 	controls.autoRotateSpeed = 10;
 	scene.userData.controls = controls;
 
@@ -642,7 +642,7 @@ var skeletons = [];
 		var settings = {
 			wireframe: false,
 			skeletons: false,
-			rotate: true,
+			rotate: false,
 			speed: 10
 		};
 

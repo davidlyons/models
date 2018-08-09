@@ -12,7 +12,8 @@ module.exports = function(grunt) {
 					style: 'nested'
 				},
 				files: {
-					'styles/style.css': 'styles/style.scss'
+					'styles/style.css': 'styles/style.scss',
+					'styles/new.css': 'styles/new.scss'
 				}
 			}
 		},

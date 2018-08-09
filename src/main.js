@@ -138,7 +138,7 @@ var skeletons = [];
 		var settings = {
 			wireframe: false,
 			skeletons: false,
-			rotate: true,
+			rotate: false,
 			speed: 10
 		};
 

@@ -23,7 +23,7 @@ var ModelScene = function( dom ){
 	controls.enablePan = false;
 	controls.enableZoom = false;
 	controls.target.y = 0.1;
-	controls.autoRotate = true;
+	controls.autoRotate = false;
 	controls.autoRotateSpeed = 10;
 	scene.userData.controls = controls;
 
